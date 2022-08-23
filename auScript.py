@@ -1,10 +1,10 @@
 import os
-
-from colorama import Fore, Style
-from instaloader import ProfileNotExistsException, instaloader
+import sys
 import threading
 import time
-import sys
+
+from colorama import Fore, Style
+from instaloader import instaloader
 
 done = False
 animation = "|/-\\"
@@ -88,18 +88,11 @@ def replace_line(file_name, line_num, text):
     out.close()
 
 
-def idToUsername(ld):
-    try:
-        return instaloader.Profile.from_id(L.context, ld).username
-    except ProfileNotExistsException:
-        return "1"
-
-
 def saveOldFollow(user):
     profile = instaloader.Profile.from_username(L.context, user)
-    if profile.followed_by_viewer is False & profile.is_private:
-        print('this account is private')
-    elif user == "omar._mustafa0":
+    # if profile.followed_by_viewer is False & profile.is_private:
+    #     print('this account is private')
+    if user == "omar._mustafa0":
         print('Something went wrong')
     else:
         hh = open("users.txt", "a")
@@ -122,15 +115,11 @@ def oldAndNewFollow(user):
     oldFollowing2 = []
     newFollowing = []
     newFollowing2 = []
-    changedNewFollowing = []
-    changedOldFollowing = []
-    hideFollowing = []
 
     profile = instaloader.Profile.from_id(L.context, int(id))
 
     for FollowingList in profile.get_followees():
         newFollowing.append(str(FollowingList.userid) + "     " + str(FollowingList.username))
-        changedNewFollowing.append(str(FollowingList.username))
 
     newUs = profile.username
     if newUs != us:
@@ -142,32 +131,23 @@ def oldAndNewFollow(user):
     r = open(user + "-oldFollowing.txt", "r")
     for g in r:
         oldFollowing.append(str(g).strip())
-        changedOldFollowing.append(str(g)[13:].strip())
     r.close()
 
     for z in oldFollowing:
-        oldFollowing2.append(z[:13].strip())
+        oldFollowing2.append(z[13:].strip())
 
     for z in newFollowing:
-        newFollowing2.append(z[:13].strip())
+        newFollowing2.append(z[13:].strip())
 
     print(Fore.RED + Style.BRIGHT + "\nUnfollowed accounts")
     for z in oldFollowing2:
         if z not in newFollowing2:
-            returnIdToUsername = idToUsername(z)
-            if len(returnIdToUsername) < 2:
-                hideFollowing.append(z + "1")
-            else:
-                print(Fore.BLUE + Style.BRIGHT + '@' + returnIdToUsername)
+            print(Fore.BLUE + Style.BRIGHT + '@' + z)
 
     print(Fore.RED + Style.BRIGHT + "\nAccounts I've Followed :")
     for z in newFollowing2:
         if z not in oldFollowing2:
-            returnIdToUsername = idToUsername(z)
-            if len(returnIdToUsername) < 2:
-                hideFollowing.append(z + "2")
-            else:
-                print(Fore.BLUE + Style.BRIGHT + '@' + returnIdToUsername)
+            print(Fore.BLUE + Style.BRIGHT + '@' + z)
 
     oldFollowers = []
     oldFollowers2 = []
@@ -183,28 +163,20 @@ def oldAndNewFollow(user):
     r.close()
 
     for z in oldFollowers:
-        oldFollowers2.append(z[:13].strip())
+        oldFollowers2.append(z[13:].strip())
 
     for z in newFollowers:
-        newFollowers2.append(z[:13].strip())
+        newFollowers2.append(z[13:].strip())
 
     print(Fore.RED + Style.BRIGHT + "\nAccounts unfollowed me :")
     for z in oldFollowers2:
         if z not in newFollowers2:
-            returnIdToUsername = idToUsername(z[:13].strip())
-            if len(returnIdToUsername) < 2:
-                hideFollowing.append(z[13:].strip())
-            else:
-                print(Fore.BLUE + Style.BRIGHT + '@' + returnIdToUsername)
+            print(Fore.BLUE + Style.BRIGHT + '@' + z)
 
     print(Fore.RED + Style.BRIGHT + "\nAccounts that started following :")
     for z in newFollowers2:
         if z not in oldFollowers2:
-            returnIdToUsername = idToUsername(z[:13].strip())
-            if len(returnIdToUsername) < 2:
-                hideFollowing.append(z[13:].strip())
-            else:
-                print(Fore.BLUE + Style.BRIGHT + '@' + returnIdToUsername)
+            print(Fore.BLUE + Style.BRIGHT + '@' + z)
     ##################################################
     f = open(user + "-oldFollowing.txt", "w")
     for newFollowingList in newFollowing:
@@ -219,5 +191,5 @@ def oldAndNewFollow(user):
 
 if len(qqq) <= 2:
     oldAndNewFollow(us)
-elif len(qqq) > 3:
+elif len(qqq) > 3 & len(qqq) < 15:
     saveOldFollow(qqq)
